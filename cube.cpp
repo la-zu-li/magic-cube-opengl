@@ -34,58 +34,63 @@ void Cube::setFaces()
     float k = 0.5;
 
     // face frontal
-    glm::vec4 vertices[4] = {
+    glm::vec4 vertices_0[4] = {
         glm::vec4(-k, k, k, 1.0f),
         glm::vec4( k, k, k, 1.0f),
         glm::vec4( k,-k, k, 1.0f),
         glm::vec4(-k,-k, k, 1.0f)
     };
-    this->faces[0] = Face(vertices);
+    this->faces[0] = Face(vertices_0);
     
     // face de baixo
-    glm::vec4 vertices[4] = {
+    glm::vec4 vertices_1[4] = {
         glm::vec4(-k,-k, k, 1.0f),
         glm::vec4( k,-k, k, 1.0f),
         glm::vec4( k,-k,-k, 1.0f),
         glm::vec4(-k,-k,-k, 1.0f)
     };
-    this->faces[1] = Face(vertices);
+    this->faces[1] = Face(vertices_1);
 
     // face da direita
-    glm::vec4 vertices[4] = {
+    glm::vec4 vertices_2[4] = {
         glm::vec4( k, k, k, 1.0f),
         glm::vec4( k, k,-k, 1.0f),
         glm::vec4( k,-k,-k, 1.0f),
-        glm::vec4( k, k, k, 1.0f)
+        glm::vec4( k,-k, k, 1.0f)
     };
-    this->faces[2] = Face(vertices);
+    this->faces[2] = Face(vertices_2);
 
     // face da esquerda
-    glm::vec4 vertices[4] = {
+    glm::vec4 vertices_3[4] = {
         glm::vec4(-k, k,-k, 1.0f),
         glm::vec4(-k, k, k, 1.0f),
         glm::vec4(-k,-k, k, 1.0f),
         glm::vec4(-k,-k,-k, 1.0f)
     };
-    this->faces[3] = Face(vertices);
+    this->faces[3] = Face(vertices_3);
 
     // face de cima
-    glm::vec4 vertices[4] = {
+    glm::vec4 vertices_4[4] = {
         glm::vec4(-k, k,-k, 1.0f),
         glm::vec4( k, k,-k, 1.0f),
         glm::vec4( k, k, k, 1.0f),
         glm::vec4(-k, k, k, 1.0f)
     };
-    this->faces[4] = Face(vertices);
+    this->faces[4] = Face(vertices_4);
 
     // face de trás
-    glm::vec4 vertices[4] = {
+    glm::vec4 vertices_5[4] = {
         glm::vec4(-k,-k,-k, 1.0f),
         glm::vec4( k,-k,-k, 1.0f),
         glm::vec4( k, k,-k, 1.0f),
         glm::vec4(-k, k,-k, 1.0f)
     };
-    this->faces[5] = Face(vertices);
+    this->faces[5] = Face(vertices_5);
+}
+
+Cube::Cube()
+{
+
 }
 
 Cube::Cube(float edge_length)
@@ -107,11 +112,6 @@ glm::vec4 Cube::getCenter()
     return this->center;
 }
 
-Face *Cube::getFaces()
-{
-    return this->faces;
-}
-
 void Cube::printFaces()
 {
     for(int i=0; i<6; i++)
@@ -123,13 +123,14 @@ void Cube::printFaces()
 
 void Cube::rotate(glm::vec3 axis)
 {
-    glm::mat4 R = glm::rotate(I, (float) M_PI/2, axis);
+    glm::mat4 R = glm::rotate(I, (float) glm::radians(90.0), axis);
 
     for(int i=0; i<6; i++)
     { 
         this->faces[i].transform(R);
     }
     this->center = R * this->center;
+    this->printFaces();
 }
 
 void Cube::translate(float x, float y, float z)
@@ -147,6 +148,7 @@ void Cube::display()
 {
     for(int i=0; i<6; i++)
     {
-        faces[i].displayTex();
+        this->faces[i].displayTex();
+        // this->faces[i].displayColor();
     }
 }

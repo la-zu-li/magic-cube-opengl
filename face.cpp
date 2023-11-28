@@ -10,6 +10,11 @@
 #include "utils.h"
 #include "config.h"
 
+Face::Face()
+{
+
+}
+
 Face::Face(glm::vec4 points[4])
 {
     for (int i=0; i<4; i++)
@@ -49,7 +54,11 @@ void Face::transform(glm::mat4 M)
 
 void Face::displayTex()
 {
-    if(!this->is_tex) return;
+    if(!this->is_tex)
+    {
+        std::cout << "NO" << std::endl;
+        return;
+    }
     
     glBindTexture(GL_TEXTURE_2D, this->tex);
     glBegin(GL_QUADS);
@@ -60,4 +69,22 @@ void Face::displayTex()
     }
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    std::cout << "SI" << std::endl;
+}
+
+void Face::setColor(glm::vec3 color)
+{
+    this->color = color;
+}
+
+void Face::displayColor()
+{
+    glColor3fv(glm::value_ptr(this->color));
+    glBegin(GL_QUADS);
+    for(int i=0; i<4; i++)
+    {
+    	glVertex3fv(glm::value_ptr(this->vr[i]));
+    }
+    glEnd();
 }

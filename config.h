@@ -13,7 +13,9 @@ int window_w = 1000;
 float world_xmin = -40.0f; 
 float world_xmax =  40.0f; 
 float world_ymin = -20.0f; 
-float world_ymax =  20.0f;
+float world_ymax =  20.0f; 
+float world_zmin = -40.0f; 
+float world_zmax =  40.0f;
 
 float world_w = world_xmax-world_xmin;
 float world_h = world_ymax-world_ymin;
@@ -22,8 +24,11 @@ float world_h = world_ymax-world_ymin;
 float magic_cube_edge = 30.0f; // tamanho da aresta do cubo mágico
 float piece_edge_length = magic_cube_edge / 3.0; // lado da peça quadrada
 
+// configurações da câmera
+float cam_speed = 3.0f; // velocidade de scroll
+
 // define o caminho das texturas que serão utilizadas nas faces
-char *texts_filepath[6] = {
+const char *texts_filepath[6] = {
     "textures/gemstone.jpg",
     "textures/lava.jpg",
     "textures/leaves.jpg",
