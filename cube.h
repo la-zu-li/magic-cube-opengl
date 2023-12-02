@@ -27,7 +27,7 @@ public:
     void rotate(glm::vec3 axis); // rotaciona o cubo 90 graus em sentido antihorário
     void translate(float x, float y, float z);
 
-    void display();
+    void display(bool use_texture);
 };
 
 #endif // CUBE_H

@@ -130,7 +130,6 @@ void Cube::rotate(glm::vec3 axis)
         this->faces[i].transform(R);
     }
     this->center = R * this->center;
-    this->printFaces();
 }
 
 void Cube::translate(float x, float y, float z)
@@ -144,11 +143,12 @@ void Cube::translate(float x, float y, float z)
     this->center = T * this->center;
 }
 
-void Cube::display()
-{
-    for(int i=0; i<6; i++)
-    {
-        this->faces[i].displayTex();
-        // this->faces[i].displayColor();
-    }
+void Cube::display(bool use_texture=true)
+{   
+    if(use_texture)
+        for(int i=0; i<6; i++)
+            this->faces[i].displayTex();
+    else
+        for(int i=0; i<6; i++)
+            this->faces[i].displayColor();
 }

@@ -9,6 +9,9 @@
 int window_h = 500;
 int window_w = 1000;
 
+float aspect_ratio = float(window_w) / float(window_h);
+                
+
 // limites das coordenadas de mundo projetadas
 float world_xmin = -40.0f; 
 float world_xmax =  40.0f; 

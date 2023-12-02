@@ -21,6 +21,7 @@ Face::Face(glm::vec4 points[4])
     {
         this->vr[i] = points[i];
     }
+    this->color = glm::vec3(1.0, 1.0, 1.0);
 }
 
 void Face::setTex(glm::vec2 tx_coords[4], unsigned tex)
@@ -54,13 +55,8 @@ void Face::transform(glm::mat4 M)
 
 void Face::displayTex()
 {
-    if(!this->is_tex)
-    {
-        std::cout << "NO" << std::endl;
-        return;
-    }
-    
     glBindTexture(GL_TEXTURE_2D, this->tex);
+
     glBegin(GL_QUADS);
     for(int i=0; i<4; i++)
     {
@@ -69,8 +65,6 @@ void Face::displayTex()
     }
     glEnd();
     glBindTexture(GL_TEXTURE_2D, 0);
-
-    std::cout << "SI" << std::endl;
 }
 
 void Face::setColor(glm::vec3 color)
