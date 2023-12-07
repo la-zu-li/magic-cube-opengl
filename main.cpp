@@ -18,33 +18,18 @@
 #include <cstdlib>
 #include <ctime>
 
-#include <vector>
-#include <random>
+#include <locale.h>
 
 #include "cube.h"
 #include "cube.cpp"
 #include "config.h"
 
-// TODO: resolver problema da ordem de exibição das faces
 unsigned textures[6];
 
 Cube cube[3][3][3];
-Cube c;
+clock_t timer;
 
-// realiza movimentos aleatórios com o cubo // UNFINISHED
-void shuffle_cube(Cube cube[3][3][3], unsigned n_iterations)
-{
-    // configura a geração de números aleatórios
-    std::random_device rd; // usado para inicializar o gerador de números
-    std::mt19937 rng(rd()); // usa a engine de Mersenne-Twister para gerar os números
-    std::uniform_int_distribution<int> rand_move(0,5);
-
-    for(int i=0; i<n_iterations; i++)
-    {
-        int random_face = rand_move(rng);
-        // TODO: lógica para mover face aleatória do cubo
-    }
-}
+int umavez = 1;
 
 // corta as texturas propriamente para colocar em cada face
 void loadTexturesOnFaces(Cube cube[3][3][3], unsigned tx[6])
@@ -216,13 +201,23 @@ void rotateMagicCube(unsigned int key, Cube cube[3][3][3])
     default:
         break;
     }
+    
+}
+
+// realiza movimentos aleatórios com o cubo
+void shuffle_cube(Cube cube[3][3][3], unsigned n_iterations)
+{
+    const char *keys = "123456";
+    for (int i=0; i<n_iterations; i++)
+    {
+    	int r = rand() % 6;
+    	rotateMagicCube(keys[r],cube);
+	}
 }
 
 // Função que cria todas as peças
 void gameStart()
 {
-    c = Cube(piece_edge_length);
-    
     glm::vec3 colors[6] = {
         glm::vec3(1.0, 0.0, 0.0), // vermelho - 0
         glm::vec3(1.0, 1.0, 0.0), // amarelo  - 1
@@ -231,18 +226,6 @@ void gameStart()
         glm::vec3(0.0, 0.0, 1.0), // azul     - 4
         glm::vec3(1.0, 0.0, 1.0)  // magenta  - 5
     };
-
-    for(int i=0; i<6; i++)
-    {
-        glm::vec2 coords[4] = {
-            glm::vec2(0,1),
-            glm::vec2(1,1),
-            glm::vec2(1,0),
-            glm::vec2(0,0)
-        };
-        // c.faces[i].setTex(coords, textures[i]);
-        c.faces[i].setColor(colors[i]);
-    }
 
     // Inicializa as coordenadas de cada peça do cubo mágico
     for(int i=0; i<3; i++)
@@ -265,10 +248,15 @@ void gameStart()
     // Carrega todas as texturas
     for(int i=0; i<6; i++)
     {
-        textures[i] = loadTexture(texts_filepath[i]);
+        textures[i] = loadTexture(cube_texts_filepaths[i]);
     }
     loadTexturesOnFaces(cube, textures);
     loadColorsOnFaces(cube, colors);
+    if(umavez == 1)
+    {
+        shuffle_cube(cube, n_iterations_shuffle);
+    	umavez = 0;
+	}
 }
 
 void openglStart()
@@ -276,7 +264,7 @@ void openglStart()
     glEnable(GL_DEPTH_TEST); 
     glEnable(GL_TEXTURE_2D);
     glLineWidth(2.0);
-    glEnable(GL_MULTISAMPLE); // habilita um tipo de antialiasing (melhora serrilhado)
+    //glEnable(GL_MULTISAMPLE); // habilita um tipo de antialiasing (melhora serrilhado)
 }
 
 void lightingStart()
@@ -284,7 +272,7 @@ void lightingStart()
     glEnable(GL_LIGHTING); // habilita iluminação
 
     glEnable(GL_LIGHT0); // habilita duas das oito fontes de luz disponíveis
-    // glEnable(GL_LIGHT1);
+    glEnable(GL_LIGHT1);
 
     // propriedades da fonte de luz 0
     glLightfv(GL_LIGHT0, GL_POSITION, glm::value_ptr(l0_pos));
@@ -335,12 +323,12 @@ void display()
     glm::mat4 proj_matrix = glm::perspective(45.0f, aspect_ratio, 0.1f, 500.0f);
     glMatrixMode(GL_PROJECTION);
     glLoadMatrixf(glm::value_ptr(proj_matrix));
-
     glm::mat4 cam_matrix = glm::lookAt(glm::vec3(cam_pos), glm::vec3(0), glm::vec3(0,1,0));
     glMatrixMode(GL_MODELVIEW);
     glLoadMatrixf(glm::value_ptr(cam_matrix));
 
-    display_axis();
+    timer = clock();
+    // display_axis();
     // exibe o cubo mágico
     for(int i=0; i<3; i++)
     {
@@ -351,9 +339,11 @@ void display()
                 cube[i][j][k].display();
             }
         }
-    }
+    }	
+    timer = clock()/2;
+    system(CLEAR);
+	printf("Tempo percorrido: %f segundos",((float)timer)/CLOCKS_PER_SEC);
 
-    // c.display();
     glutSwapBuffers();
 }
 
@@ -364,11 +354,13 @@ int main(int argc, char** argv)
     glutInitWindowPosition(200,200);              // posição do canto superior esquerdo da janela com relação a tela
     glutInitWindowSize(window_w,window_h);        // resolução da janela (framebuffer)
     glutCreateWindow("Magic Cube");               // cria a janela (a string aparece na barra de titulo da janela)
-
-    openglStart();
-    gameStart();
+	clock_t timer;
+	timer = clock();	
+	
     lightingStart();
-    // shuffle_cube(1000);
+    openglStart();
+    //shuffle_cube(cube,1000);
+    gameStart();
     
     glutReshapeFunc(windowResize); // tratamento do redimensionamento da janela
     glutKeyboardFunc(keyboard);

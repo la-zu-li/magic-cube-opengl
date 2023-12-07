@@ -4,8 +4,16 @@
 #include <glm/glm.hpp>
 #include "config.h"
 #include "cube.h"
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
+
+// condicional para definir qual é a função de linha de comando que limpa a tela
+#ifdef WINDOWS // se estiver no windows, o comando é "cls"
+#define CLEAR "cls"
+#else // caso contrário, o sistema deve ser do tipo UNIX, o comando é "clear"
+#define CLEAR "clear"
+#endif
 
 glm::mat4 I = glm::mat4(1.0f);
 
@@ -99,4 +107,5 @@ void rotateFaceIndices(Cube face1[3][3], Cube face2[3][3])
     face2[0][1] = face1[1][2];
     face2[1][1] = face1[1][1];
 }
+
 #endif // UTILS_H
