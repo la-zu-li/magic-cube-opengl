@@ -29,7 +29,7 @@ void display_axis()
     glEnd();
 }
 
-// converte coordenadas de janela pra coordenadas de mundo
+// converte coordenadas de janela para coordenadas de mundo
 glm::vec2 windowToWorldCoordinates(int x_window, int y_window)
 {
     y_window = window_h - y_window;
@@ -67,7 +67,7 @@ unsigned loadTexture(const char *filepath)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); //minificação - quando muitos texels cabem em um único pixel
 
     //parâmetros da textura para indicar se a textura deve-se combinar ou substituir a atual cor do objeto
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); //GL_REPLACE = substitui, GL_COMBINE = combina (ou multiplica)
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_COMBINE); //GL_REPLACE = substitui, GL_COMBINE = combina (ou multiplica)
 
     //envio dos dados da textura para o OpenGL
     glTexImage2D(GL_TEXTURE_2D,

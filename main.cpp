@@ -31,8 +31,6 @@ unsigned textures[6];
 Cube cube[3][3][3];
 Cube c;
 
-glm::vec4 cam_pos = glm::vec4(10, 10, 70, 1);
-
 // realiza movimentos aleatórios com o cubo // UNFINISHED
 void shuffle_cube(Cube cube[3][3][3], unsigned n_iterations)
 {
@@ -101,6 +99,24 @@ void rotateCamera(unsigned int key, glm::vec4 *cam_pos)
         break;
     case 'c':
         *cam_pos = R_CAM_Z * (*cam_pos);
+        break;
+    default:
+        break;
+    }
+}
+
+void rotateLightSource(unsigned int key, glm::vec4 *light_pos)
+{
+    switch (key)
+    {
+    case 'j':
+        *light_pos = R_CAM_X * (*light_pos);
+        break;
+    case 'k':
+        *light_pos = R_CAM_Y * (*light_pos);
+        break;
+    case 'l':
+        *light_pos = R_CAM_Z * (*light_pos);
         break;
     default:
         break;
@@ -259,7 +275,34 @@ void openglStart()
 {
     glEnable(GL_DEPTH_TEST); 
     glEnable(GL_TEXTURE_2D);
+    glLineWidth(2.0);
     glEnable(GL_MULTISAMPLE); // habilita um tipo de antialiasing (melhora serrilhado)
+}
+
+void lightingStart()
+{
+    glEnable(GL_LIGHTING); // habilita iluminação
+
+    glEnable(GL_LIGHT0); // habilita duas das oito fontes de luz disponíveis
+    // glEnable(GL_LIGHT1);
+
+    // propriedades da fonte de luz 0
+    glLightfv(GL_LIGHT0, GL_POSITION, glm::value_ptr(l0_pos));
+    glLightfv(GL_LIGHT0, GL_AMBIENT , glm::value_ptr(l0_amb));
+    glLightfv(GL_LIGHT0, GL_DIFFUSE , glm::value_ptr(l0_dif));
+    glLightfv(GL_LIGHT0, GL_SPECULAR, glm::value_ptr(l0_spec));
+
+    //propriedades da fonte de luz 1
+    // glLightfv(GL_LIGHT1, GL_POSITION, glm::value_ptr(l1_pos));
+    // glLightfv(GL_LIGHT1, GL_AMBIENT , glm::value_ptr(l1_amb));
+    // glLightfv(GL_LIGHT1, GL_DIFFUSE , glm::value_ptr(l1_dif));
+    // glLightfv(GL_LIGHT1, GL_SPECULAR, glm::value_ptr(l1_spec));
+    
+    //propriedades do material do objeto
+    glMaterialfv(GL_FRONT, GL_AMBIENT  , glm::value_ptr(mat_amb));
+    glMaterialfv(GL_FRONT, GL_DIFFUSE  , glm::value_ptr(mat_dif));
+    glMaterialfv(GL_FRONT, GL_SPECULAR , glm::value_ptr(mat_spec));
+    glMaterialfv(GL_FRONT, GL_SHININESS, glm::value_ptr(mat_shine));
 }
 
 void windowResize(int width, int height){
@@ -273,6 +316,8 @@ void windowResize(int width, int height){
 void keyboard(unsigned char key, int x, int y)
 {   
     rotateCamera(key, &cam_pos);
+    rotateLightSource(key, &l0_pos);
+    glLightfv(GL_LIGHT0, GL_POSITION, glm::value_ptr(l0_pos));
     rotateMagicCube(key, cube);
 
     glutPostRedisplay();
@@ -322,6 +367,7 @@ int main(int argc, char** argv)
 
     openglStart();
     gameStart();
+    lightingStart();
     // shuffle_cube(1000);
     
     glutReshapeFunc(windowResize); // tratamento do redimensionamento da janela
